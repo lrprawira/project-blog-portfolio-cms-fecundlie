@@ -2,15 +2,19 @@ import BlogEntry from '../components/BlogEntry';
 
 // User components
 import '../components/userComponents/Images';
+import '../components/userComponents/Paragraph';
+import '../components/userComponents/HorizontalSpacer';
+import '../components/userComponents/VerticalSpacer';
 
 function PersonalBlog() {
 	const blogEntries = [
 		{
 			title: 'Hantu Lokal #1',
 			content: `
-			<p>Hantu Lokal or Local Indonesian Ghost is a series that I made as my personal toys collection. Every series is up to 6 characters.</p>
-			<p>I was thinking what to do this October? So I took the closest thing around me, it had to be spooky, but cute in the same time.</p>
-			<p>Not forgetting the touch of fun and cartoon as I like that kind of style.</p>
+			<bpc-paragraph text="Hantu Lokal or Local Indonesian Ghost is a series that I made as my personal toys collection. Every series is up to 6 characters."></bpc-paragraph>
+			<bpc-paragraph text="I was thinking what to do this October? So I took the closest thing around me, it had to be spooky, but cute in the same time."></bpc-paragraph>
+			<bpc-paragraph text="Not forgetting the touch of fun and cartoon as I like that kind of style."></bpc-paragraph>
+			<bpc-vertical-spacer></bpc-vertical-spacer>
 			<bpc-images>
 				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643AUtQvKcy.png" />
 				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643ZmdPyBWf.png" />
