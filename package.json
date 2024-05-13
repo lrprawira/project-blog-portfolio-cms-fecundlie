@@ -1,0 +1,25 @@
+{
+  "name": "project-blog-portfolio-cms",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@solidjs/meta": "^0.29.3",
+    "@solidjs/router": "^0.13.3",
+    "solid-element": "^1.8.0",
+    "solid-icons": "^1.1.0",
+    "solid-js": "^1.8.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "typescript": "^5.2.2",
+    "unocss": "^0.60.0",
+    "vite": "^5.2.0",
+    "vite-plugin-solid": "^2.10.2"
+  }
+}

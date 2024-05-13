@@ -1,0 +1,15 @@
+.wrapper {
+	width: 16em;
+	background-color: rgba(74, 69, 76, .45);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+	height: 100%;
+	position: fixed;
+}
+
+.nav {
+	width: inherit;
+	display: flex;
+	flex-direction: column;
+	height: calc(100% - 3em);
+}
