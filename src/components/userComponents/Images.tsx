@@ -1,30 +1,32 @@
-import { customElement, noShadowDOM } from 'solid-element';
-import { CustomElement } from './types';
-import { ParentComponent } from 'solid-js';
+import { customElement, noShadowDOM } from "solid-element";
+import { CustomElement } from "./types";
+import { ParentComponent } from "solid-js";
 
-const componentTag = 'bpc-images';
+const componentTag = "bpc-images";
 
-const Images: ParentComponent = (props) => {
-	noShadowDOM();
-	return (
-		<div class={`${componentTag} grid gap-2 grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))]`}>
-			{(props.children instanceof HTMLCollection) ? Array.from(props.children).map((x) => {
-				(x as HTMLElement).style.width = '100%';
-				return x;
-			}) : null}
-		</div>
-	);
+const Images: ParentComponent<{ minSize?: number }> = (props) => {
+  noShadowDOM();
+
+  return (
+    <div class={`${componentTag} grid gap-2`} style={{"grid-template-columns": `repeat(auto-fill, minmax(${props.minSize ?? 200}px, 1fr))`}}>
+      {props.children instanceof HTMLCollection
+        ? Array.from(props.children).map((x) => {
+            (x as HTMLElement).style.width = "100%";
+            return x;
+          })
+        : null}
+    </div>
+  );
+};
+
+declare module "solid-js" {
+  namespace JSX {
+    interface IntrinsicElements {
+      [componentTag]: CustomElement<typeof Images>;
+    }
+  }
 }
 
-declare module 'solid-js' {
-	namespace JSX {
-		interface IntrinsicElements {
-			[componentTag]: CustomElement<typeof Images>
-		}
-	}
-}
-
-customElement(componentTag, {children: <></>}, Images);
+customElement(componentTag, { children: <></>, minSize: undefined }, Images);
 
 export default Images;
-

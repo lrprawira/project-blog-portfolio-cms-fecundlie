@@ -1,5 +1,5 @@
-import type { ComponentProps } from "solid-js"
+import type { ComponentProps, ValidComponent } from "solid-js"
 
-export type CustomElement<T> = Partial<T & ComponentProps<'div'>>
+export type CustomElement<T extends ValidComponent> = Partial<ComponentProps<T>>
 
 
