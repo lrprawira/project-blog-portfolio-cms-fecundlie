@@ -29,7 +29,7 @@ interface Entry {
 }
 
 function PersonalBlog() {
-  const [currentPage, setCurrentPage] = createSignal<number>(0);
+  const [currentPage] = createSignal<number>(0);
   const [entries, setEntries] = createSignal<Array<Entry>>([]);
   createEffect(async () => {
     const [fullHeader, resHeaders] = await getData(
