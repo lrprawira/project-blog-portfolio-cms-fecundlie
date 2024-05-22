@@ -1,43 +1,112 @@
-import BlogEntry from '../components/BlogEntry';
+import BlogEntry from "../components/BlogEntry";
+
+//
+import {
+  getData,
+  getDocId,
+  getEntryPointer,
+  getEntrySize,
+  getPaginationByteRange,
+  getPathUsingEnvironment,
+  trimTrailingNuls,
+  validateFormatHeader,
+} from "../lib/getData";
 
 // User components
-import '../components/userComponents/Images';
-import '../components/userComponents/Paragraph';
-import '../components/userComponents/HorizontalSpacer';
-import '../components/userComponents/VerticalSpacer';
+import "../components/userComponents/Images";
+import "../components/userComponents/Paragraph";
+import "../components/userComponents/HorizontalSpacer";
+import "../components/userComponents/VerticalSpacer";
+import { Index, createEffect, createSignal } from "solid-js";
+
+const PAGE_LENGTH = 10;
+
+interface Entry {
+  title?: string;
+  content?: string;
+  slug?: string;
+  timestamp?: number;
+}
 
 function PersonalBlog() {
-	const blogEntries = [
-		{
-			title: 'Hantu Lokal #1',
-			content: `
-			<bpc-paragraph text="Hantu Lokal or Local Indonesian Ghost is a series that I made as my personal toys collection. Every series is up to 6 characters."></bpc-paragraph>
-			<bpc-paragraph text="I was thinking what to do this October? So I took the closest thing around me, it had to be spooky, but cute in the same time."></bpc-paragraph>
-			<bpc-paragraph text="Not forgetting the touch of fun and cartoon as I like that kind of style."></bpc-paragraph>
-			<bpc-vertical-spacer></bpc-vertical-spacer>
-			<bpc-images>
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643AUtQvKcy.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643ZmdPyBWf.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643Yst9W5Zz.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643uxMIGxAu.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643shwfURsb.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643ncJX0TS6.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-7166436xxHXaJD.png" />
-				<img src="https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/h400-716643rheEnBPb.png" />
-			</bpc-images>
-			`,
-			timestamp: Math.floor(Date.now() / 1000),
-		},
-	];
-	return (
-		<div class="flex flex-1 flex-justify-center mt-8">
-			<div class="flex flex-col max-w-275 w-75% gap-16">
-				{
-					blogEntries.map(blogEntry => <BlogEntry title={blogEntry.title} content={blogEntry.content} timestamp={blogEntry.timestamp} />)
-				}
-			</div>
-		</div>
-	)
+  const [currentPage, setCurrentPage] = createSignal<number>(0);
+  const [entries, setEntries] = createSignal<Array<Entry>>([]);
+  createEffect(async () => {
+    const [fullHeader, resHeaders] = await getData(
+      "/data/blog/pointer.bin",
+      0,
+      81,
+    );
+    const contentLength = parseInt(
+      resHeaders.get("content-range")?.match("[0-9]*$")?.[0] ?? "",
+    );
+    if (isNaN(contentLength)) {
+      throw new Error("unexpected content length");
+    }
+    validateFormatHeader(fullHeader);
+    const docId = getDocId(fullHeader);
+		if (docId !== 0x1A) {
+			console.error('Wrong DocId');
+		}
+    const entrySize = getEntrySize(fullHeader);
+    // const bitmasks = getBitmasks(fullHeader);
+    const entryPointer = getEntryPointer(fullHeader);
+    const [firstPageByte, lastPageByte] = getPaginationByteRange(
+      entryPointer,
+      Number(entrySize),
+      currentPage(),
+      PAGE_LENGTH,
+      contentLength,
+    );
+    const [entries] = await getData(
+      "/data/blog/pointer.bin",
+      firstPageByte,
+      lastPageByte,
+    );
+    const currentPageEntries = entries.length / Number(entrySize);
+    const entryIds = Array<string>(currentPageEntries);
+    const promisesOfEntries =
+      Array<Promise<Omit<Entry, "slug">>>(currentPageEntries);
+    for (let i = 0; i < currentPageEntries; ++i) {
+      const iByte = i * Number(entrySize);
+      const firstByte = entries.length - iByte - Number(entrySize);
+      const lastByte = entries.length - iByte;
+      entryIds[i] = new TextDecoder("utf-8").decode(
+        trimTrailingNuls(entries.slice(firstByte, lastByte)),
+      );
+      promisesOfEntries[i] = (
+        await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.json`))
+      ).json();
+    }
+    const resolvedEntries = await Promise.allSettled(promisesOfEntries);
+    const _entries = [];
+    for (let i = 0; i < currentPageEntries; ++i) {
+      const resolvedEntry = resolvedEntries[i];
+      if (resolvedEntry.status === "rejected") {
+        continue;
+      }
+      _entries.push({
+        ...resolvedEntry.value,
+        slug: entryIds[i],
+      });
+    }
+    setEntries(_entries);
+  });
+  return (
+    <div class="flex flex-1 flex-justify-center mt-8">
+      <div class="flex flex-col max-w-275 w-75% gap-16 pb-8">
+        <Index each={entries()}>
+          {(blogEntry) => (
+            <BlogEntry
+              title={blogEntry().title}
+              content={blogEntry().content}
+              timestamp={blogEntry().timestamp}
+            />
+          )}
+        </Index>
+      </div>
+    </div>
+  );
 }
 
 export default PersonalBlog;

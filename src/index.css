@@ -22,6 +22,14 @@ a:hover {
   color: inherit;
 }
 
+a {
+	--uno: "text-color-green hover:text-color-lime";
+}
+
+p {
+	line-height: 2;
+}
+
 body {
   margin: 0;
   display: flex;

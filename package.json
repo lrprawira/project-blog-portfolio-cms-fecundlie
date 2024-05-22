@@ -11,11 +11,13 @@
   "dependencies": {
     "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.13.3",
+    "isomorphic-git": "^1.25.10",
     "solid-element": "^1.8.0",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.8.15"
   },
   "devDependencies": {
+    "@netlify/functions": "^2.6.3",
     "@types/node": "^20.12.11",
     "typescript": "^5.2.2",
     "unocss": "^0.60.0",

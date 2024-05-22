@@ -1,5 +1,6 @@
+import constants from '../lib/constants';
 import { A } from "@solidjs/router";
-import { FaBrandsBehance, FaBrandsInstagram, FaBrandsLinkedin, FaBrandsPinterest } from "solid-icons/fa";
+import { FaBrandsBehance, FaBrandsInstagram, FaBrandsLinkedin, FaBrandsPinterest, FaRegularEnvelope } from "solid-icons/fa";
 
 function SiteWideLinks() {
 	return (
@@ -7,10 +8,11 @@ function SiteWideLinks() {
 			<span class="text-sm">
 				Connect :
 			</span>
-			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/fecundlie/"><FaBrandsLinkedin /></A>
-			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/fecundlie/"><FaBrandsInstagram /></A>
-			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href="https://www.behance.net/Fecundlie"><FaBrandsBehance /></A>
-			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href="https://www.pinterest.com/fecundlie/"><FaBrandsPinterest /></A>
+			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href={constants.contacts.linkedin}><FaBrandsLinkedin /></A>
+			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href={constants.contacts.instagram}><FaBrandsInstagram /></A>
+			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href={constants.contacts.behance}><FaBrandsBehance /></A>
+			<A class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href={constants.contacts.pinterest}><FaBrandsPinterest /></A>
+			<a class="text-white hover:text-white leading-none" target="_blank" rel="noopener noreferrer" href={`mailto:${constants.contacts.email}`}><FaRegularEnvelope /></a>
 		</div>
 	)
 }
