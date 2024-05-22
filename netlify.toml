@@ -1,3 +1,8 @@
 [dev]
-command = "pnpm dev"
-targetPort = 5173
+	command = "pnpm dev"
+	targetPort = 5173
+
+[[redirects]]
+	from = "/*"
+	to = "/index.html"
+	status = 200
