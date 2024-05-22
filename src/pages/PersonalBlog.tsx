@@ -37,17 +37,19 @@ function PersonalBlog() {
       0,
       81,
     );
-    const contentLength = parseInt(
-      resHeaders.get("content-range")?.match("[0-9]*$")?.[0] ?? "",
-    );
+    // const contentLength = parseInt(
+    //   resHeaders.get("content-range")?.match("[0-9]*$")?.[0] ?? "",
+    // );
+    const contentLength = parseInt(resHeaders.get("content-length") ?? "");
     if (isNaN(contentLength)) {
+      console.error(resHeaders.get("content-range"));
       throw new Error("unexpected content length");
     }
     validateFormatHeader(fullHeader);
     const docId = getDocId(fullHeader);
-		if (docId !== 0x1A) {
-			console.error('Wrong DocId');
-		}
+    if (docId !== 0x1a) {
+      console.error("Wrong DocId");
+    }
     const entrySize = getEntrySize(fullHeader);
     // const bitmasks = getBitmasks(fullHeader);
     const entryPointer = getEntryPointer(fullHeader);

@@ -12,13 +12,18 @@ async function getFileBytes(
   offset: number,
   bytes: number,
 ): Promise<[Uint8Array, Headers]> {
+	// Github CORS makes it impossible for regular browsers to access Content-Range for some reason
+	const headRes = await fetch(path, {
+		method: 'HEAD',
+		cache: 'no-cache',
+	});
   const res = await fetch(path, {
     headers: new Headers({
       Range: `bytes=${offset}-${offset + bytes}`,
     }),
   });
   const bin = await res.arrayBuffer();
-  return [new Uint8Array(bin), res.headers];
+  return [new Uint8Array(bin), headRes.headers];
 }
 
 // async function getRemoteBytes(
@@ -36,11 +41,11 @@ async function getFileBytes(
 // }
 
 export function getPathUsingEnvironment(path: string) {
-	return process.env.NODE_ENV === 'development' ? path : `${getRemotePathPrefix}${path}`
+	return process.env.NODE_ENV === 'development' ? path : `${getRemotePathPrefix()}${path}`
 }
 
 function getRemotePathPrefix() {
-	return 'https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master';
+	return 'https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master/public';
 }
 
 export function typedArrayToHexStringArray(arr: Uint8Array): Array<string> {
