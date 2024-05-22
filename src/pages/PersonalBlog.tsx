@@ -42,7 +42,6 @@ function PersonalBlog() {
     // );
     const contentLength = parseInt(resHeaders.get("content-length") ?? "");
     if (isNaN(contentLength)) {
-      console.error(resHeaders.get("content-range"));
       throw new Error("unexpected content length");
     }
     validateFormatHeader(fullHeader);
