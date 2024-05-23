@@ -18,6 +18,7 @@ import "../components/userComponents/Paragraph";
 import "../components/userComponents/HorizontalSpacer";
 import "../components/userComponents/VerticalSpacer";
 import { Index, Show, createEffect, createSignal } from "solid-js";
+import PageLoading from "../components/PageLoading";
 
 const PAGE_LENGTH = 10;
 
@@ -115,7 +116,7 @@ function PersonalBlog() {
       <div class="flex flex-col max-w-275 w-75% gap-16 pb-8">
         <Show
           when={!loading()}
-          fallback={<div class={"text-center p-4"}>Loading</div>}
+          fallback={<PageLoading />}
         >
           <Index each={entries()}>
             {(blogEntry) => (
