@@ -28,6 +28,9 @@ interface Entry {
   timestamp?: number;
 }
 
+type EntryJson = Omit<Entry, "slug"|"content">;
+type EntryHtml = string;
+
 function PersonalBlog() {
   const [loading, setLoading] = createSignal<boolean>(false);
   const [currentPage] = createSignal<number>(0);
@@ -70,7 +73,7 @@ function PersonalBlog() {
       const currentPageEntries = entries.length / Number(entrySize);
       const entryIds = Array<string>(currentPageEntries);
       const promisesOfEntries =
-        Array<Promise<Omit<Entry, "slug">>>(currentPageEntries);
+        Array<Promise<EntryJson | EntryHtml>>(currentPageEntries * 2);
       for (let i = 0; i < currentPageEntries; ++i) {
         const iByte = i * Number(entrySize);
         const firstByte = entries.length - iByte - Number(entrySize);
@@ -81,17 +84,22 @@ function PersonalBlog() {
         promisesOfEntries[i] = (
           await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.json`))
         ).json();
+				promisesOfEntries[i+currentPageEntries] = (await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`))).text();
       }
       const resolvedEntries = await Promise.allSettled(promisesOfEntries);
       const _entries = [];
       for (let i = 0; i < currentPageEntries; ++i) {
-        const resolvedEntry = resolvedEntries[i];
-        if (resolvedEntry.status === "rejected") {
-          _entries.push({}); // Let it be added on error
-          continue;
-        }
+        const resolvedEntryJson = resolvedEntries[i];
+				const resolvedEntryHtml = resolvedEntries[i + currentPageEntries];
+        // if (resolvedEntry.status === "rejected") {
+        //   _entries.push({}); // Let it be added on error
+        //   continue;
+        // }
         _entries.push({
-          ...resolvedEntry.value,
+					title: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).title,
+					timestamp: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).timestamp,
+					// Handle local dev (public dir) html checking by avoiding html tag since it is relatively easy to look
+					content: (resolvedEntryHtml.status === 'rejected') || ((resolvedEntryHtml.value as EntryHtml).includes('<html')) ? undefined : (resolvedEntryHtml.value as EntryHtml),
           slug: entryIds[i],
         });
       }
