@@ -8,9 +8,15 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
   noShadowDOM();
 
   return (
-    <div class={`${componentTag} grid gap-2`} style={{"grid-template-columns": `repeat(auto-fill, minmax(${props.minSize ?? 200}px, 1fr))`}}>
+    <div
+      class={`${componentTag} grid gap-2`}
+      style={{
+        "grid-template-columns": `repeat(auto-fill, minmax(${props.minSize ?? 200}px, 1fr))`,
+      }}
+    >
       {props.children instanceof HTMLCollection
         ? Array.from(props.children).map((x) => {
+            x.setAttribute("loading", "lazy");
             (x as HTMLElement).style.width = "100%";
             return x;
           })

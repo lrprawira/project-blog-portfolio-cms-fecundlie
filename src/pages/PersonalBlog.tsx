@@ -34,12 +34,12 @@ function PersonalBlog() {
   const [entries, setEntries] = createSignal<Array<Entry>>([]);
   createEffect(async () => {
     setLoading(true);
-    const [fullHeader, resHeaders] = await getData(
-      "/data/blog/pointer.bin",
-      0,
-      81,
-    );
     try {
+      const [fullHeader, resHeaders] = await getData(
+        "/data/blog/pointer.bin",
+        0,
+        81,
+      );
       // const contentLength = parseInt(
       //   resHeaders.get("content-range")?.match("[0-9]*$")?.[0] ?? "",
       // );
@@ -87,7 +87,7 @@ function PersonalBlog() {
       for (let i = 0; i < currentPageEntries; ++i) {
         const resolvedEntry = resolvedEntries[i];
         if (resolvedEntry.status === "rejected") {
-					_entries.push({}); // Let it be added on error
+          _entries.push({}); // Let it be added on error
           continue;
         }
         _entries.push({
@@ -105,7 +105,10 @@ function PersonalBlog() {
   return (
     <div class="flex flex-1 flex-justify-center mt-8">
       <div class="flex flex-col max-w-275 w-75% gap-16 pb-8">
-        <Show when={!loading()} fallback={<div class={'text-center p-4'}>Loading</div>}>
+        <Show
+          when={!loading()}
+          fallback={<div class={"text-center p-4"}>Loading</div>}
+        >
           <Index each={entries()}>
             {(blogEntry) => (
               <BlogEntry
