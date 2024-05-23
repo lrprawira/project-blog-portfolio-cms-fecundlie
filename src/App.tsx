@@ -1,4 +1,3 @@
-import { Link } from "@solidjs/meta";
 import { Router, Route, useLocation } from "@solidjs/router";
 import SideNavigation from "./components/SideNavigation";
 import { ParentProps, createEffect, lazy } from "solid-js";
