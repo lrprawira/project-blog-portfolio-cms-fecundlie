@@ -85,7 +85,13 @@ function PersonalBlog() {
         promisesOfEntries[i] = (
           await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.json`))
         ).json();
-				promisesOfEntries[i+currentPageEntries] = (await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`))).text();
+				promisesOfEntries[i+currentPageEntries] = new Promise(async (resolve, reject) => {
+					const res = await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`));
+					if (!res.ok) {
+						reject(await res.text());
+					}
+					resolve(await res.text());
+				});
       }
       const resolvedEntries = await Promise.allSettled(promisesOfEntries);
       const _entries = [];
@@ -96,11 +102,12 @@ function PersonalBlog() {
         //   _entries.push({}); // Let it be added on error
         //   continue;
         // }
+				console.log(resolvedEntryHtml)
         _entries.push({
 					title: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).title,
 					timestamp: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).timestamp,
 					// Handle local dev (public dir) html checking by avoiding html tag since it is relatively easy to look
-					content: (resolvedEntryHtml.status === 'rejected') || ((resolvedEntryHtml.value as EntryHtml).includes('<html')) ? undefined : (resolvedEntryHtml.value as EntryHtml),
+					content: (resolvedEntryHtml.status === 'rejected') || ((resolvedEntryHtml.value as EntryHtml).startsWith('<!doctype html>\n<html')) ? undefined : (resolvedEntryHtml.value as EntryHtml),
           slug: entryIds[i],
         });
       }
