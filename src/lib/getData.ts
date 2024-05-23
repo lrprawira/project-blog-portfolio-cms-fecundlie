@@ -1,7 +1,7 @@
 import constants from "./constants";
 
 export async function getData(path: string, offset: number, bytes: number) {
-	return getFileBytes(getPathUsingEnvironment(path), offset, bytes);
+  return getFileBytes(getPathUsingEnvironment(path), offset, bytes);
   // return process.env.NODE_ENV === "development"
   //   ? getFileBytes(path, offset, bytes)
   //   : getRemoteBytes(path, offset, bytes);
@@ -12,16 +12,19 @@ async function getFileBytes(
   offset: number,
   bytes: number,
 ): Promise<[Uint8Array, Headers]> {
-	// Github CORS makes it impossible for regular browsers to access Content-Range for some reason
-	const headRes = await fetch(path, {
-		method: 'HEAD',
-		cache: 'no-cache',
-	});
-  const res = await fetch(path, {
-    headers: new Headers({
-      Range: `bytes=${offset}-${offset + bytes}`,
+  // Github CORS makes it impossible for regular browsers to access Content-Range for some reason
+  const responsePromises = [
+    fetch(path, {
+      method: "HEAD",
+      cache: "no-cache",
     }),
-  });
+    fetch(path, {
+      headers: new Headers({
+        Range: `bytes=${offset}-${offset + bytes}`,
+      }),
+    }),
+  ];
+  const [headRes, res] = await Promise.all(responsePromises);
   const bin = await res.arrayBuffer();
   return [new Uint8Array(bin), headRes.headers];
 }
@@ -41,11 +44,13 @@ async function getFileBytes(
 // }
 
 export function getPathUsingEnvironment(path: string) {
-	return process.env.NODE_ENV === 'development' ? path : `${getRemotePathPrefix()}${path}`
+  return process.env.NODE_ENV === "development"
+    ? path
+    : `${getRemotePathPrefix()}${path}`;
 }
 
 function getRemotePathPrefix() {
-	return 'https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master/public';
+  return "https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master/public";
 }
 
 export function typedArrayToHexStringArray(arr: Uint8Array): Array<string> {

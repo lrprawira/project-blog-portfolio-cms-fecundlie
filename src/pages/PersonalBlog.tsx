@@ -87,6 +87,7 @@ function PersonalBlog() {
       for (let i = 0; i < currentPageEntries; ++i) {
         const resolvedEntry = resolvedEntries[i];
         if (resolvedEntry.status === "rejected") {
+					_entries.push({}); // Let it be added on error
           continue;
         }
         _entries.push({

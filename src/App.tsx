@@ -1,9 +1,16 @@
 import { Router, Route, useLocation } from "@solidjs/router";
 import SideNavigation from "./components/SideNavigation";
-import { ParentProps, createEffect, lazy } from "solid-js";
+import { ParentProps, lazy } from "solid-js";
 import { MetaProvider, Title } from "@solidjs/meta";
 import constants from "./lib/constants";
 import SiteWideLinks from "./components/SiteWideLinks";
+
+const LazyRoot = lazy(() => import("./pages/Root"));
+const LazyWelcome = lazy(() => import("./pages/Welcome"));
+const LazyAboutMe = lazy(() => import("./pages/AboutMe"));
+const LazyPersonalBlog = lazy(() => import("./pages/PersonalBlog"));
+const LazyNotFound = lazy(() => import("./pages/NotFound"));
+const LazyNotFoundRedirector = lazy(() => import("./pages/NotFoundRedirector"));
 
 function RouterWrapper(props: ParentProps) {
   const location = useLocation();
@@ -21,19 +28,6 @@ function RouterWrapper(props: ParentProps) {
 }
 
 function App() {
-  createEffect(async () => {
-
-  });
-
-  const LazyRoot = lazy(() => import("./pages/Root"));
-  const LazyWelcome = lazy(() => import("./pages/Welcome"));
-  const LazyAboutMe = lazy(() => import("./pages/AboutMe"));
-  const LazyPersonalBlog = lazy(() => import("./pages/PersonalBlog"));
-  const LazyNotFound = lazy(() => import("./pages/NotFound"));
-  const LazyNotFoundRedirector = lazy(
-    () => import("./pages/NotFoundRedirector"),
-  );
-
   return (
     <MetaProvider>
       <div id="app" class="w-full h-full font-inter">
