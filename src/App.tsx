@@ -39,7 +39,7 @@ function App() {
     <MetaProvider>
       <div id="app" class="w-full h-full font-inter">
         <Title>{constants.title}</Title>
-        <Link rel="icon" href={constants.favicon} type="image/x-icon"></Link>
+        {/* <Link rel="icon" href={constants.favicon} type="image/x-icon"></Link> */}
         <Router root={RouterWrapper}>
           <Route path={"/"} component={LazyRoot} />
           <Route path={"/welcome"} component={LazyWelcome} />

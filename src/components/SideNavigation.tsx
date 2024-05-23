@@ -44,11 +44,17 @@ function SideNavigation() {
       <div class={styles.wrapper}>
         <nav class={styles.nav}>
           <A href="/" class="w-inherit pb-4 mt-8">
-            <img
-              class={"w-inherit px-6 box-border"}
-              src={constants.sidebarHomeImage}
-              alt=""
-            />
+            <picture>
+              <source srcset={"/logo.avif"} type="image/avif" />
+              <source srcset={"/logo.webp"} type="image/webp" />
+              <img
+                class={"w-inherit px-6 box-border"}
+                src={"/logo.png"}
+                alt="Site Logo"
+								loading="lazy"
+								decoding="async"
+              />
+            </picture>
           </A>
           <div
             class={"flex flex-col gap-3 flex-grow-1 flex-basis-0 overflow-auto"}
