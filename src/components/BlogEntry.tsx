@@ -7,7 +7,12 @@ const BlogEntry: Component<{ title?: string, content?: string, timestamp?: numbe
 			<div class="text-base font-light" innerHTML={props.content ?? '(no content)'}></div>
 			<div class="mt-8 text-gray-400">
 				<Show when={props.timestamp} fallback={'Invalid Date'}>
-					{new Date((props.timestamp!) * 1000).toDateString()}
+					{new Date((props.timestamp!) * 1000).toLocaleDateString('en-SG', {
+						weekday: 'long',
+						day: '2-digit',
+						month: 'long',
+						year: 'numeric',
+					})}
 				</Show>
 			</div>
 		</div>
