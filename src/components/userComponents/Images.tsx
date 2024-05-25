@@ -16,8 +16,15 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
     >
       {props.children instanceof HTMLCollection
         ? Array.from(props.children).map((x) => {
-            x.setAttribute("loading", "lazy");
-            (x as HTMLElement).style.width = "100%";
+            let img = x as HTMLElement;
+            if (!(img instanceof HTMLImageElement)) {
+              img = img.querySelector("img") ?? img;
+            }
+            img.setAttribute("loading", "lazy");
+            img.style.width = "100%";
+            if (!img.hasAttribute("alt")) {
+              img.setAttribute("alt", "");
+            }
             return x;
           })
         : null}

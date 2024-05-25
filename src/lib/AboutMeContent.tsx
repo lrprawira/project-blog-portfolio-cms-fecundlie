@@ -37,7 +37,7 @@ const RightSideContent = () => (
         class="text-color-green hover:text-color-lime"
         href={`mailto:${constants.contacts.email}`}
       >
-				{constants.contacts.email}
+        {constants.contacts.email}
       </a>
     </p>
     <div class="my-8">
@@ -45,7 +45,7 @@ const RightSideContent = () => (
       <table class={"w-full"}>
         <tbody>
           <tr>
-						<td>-</td>
+            <td>-</td>
             <td>
               <a
                 class="text-color-green hover:text-color-lime"
@@ -54,7 +54,7 @@ const RightSideContent = () => (
                 Instagram
               </a>
             </td>
-						<td>-</td>
+            <td>-</td>
             <td>
               <a
                 class="text-color-green hover:text-color-lime"
@@ -89,18 +89,39 @@ const RightSideContent = () => (
     </div>
     <div>
       <bpc-images min-size={150}>
-        <img
-          src="https://dvqlxo2m2q99q.cloudfront.net/000_clients/716643/file/7166432JlTrOMi.png"
-          alt=""
-        />
-        <img
-          src="https://dvqlxo2m2q99q.cloudfront.net/000_clients/716643/file/716643qu7bH3bo.png"
-          alt=""
-        />
-        <img
-          src="https://dvqlxo2m2q99q.cloudfront.net/000_clients/716643/file/716643pk0JcOEJ.png"
-          alt=""
-        />
+        <picture>
+          <source
+            srcset="/data/about-me/7166432JlTrOMi.avif"
+            type="image/avif"
+          />
+          <source
+            srcset="/data/about-me/7166432JlTrOMi.webp"
+            type="image/webp"
+          />
+          <img src="/data/about-me/7166432JlTrOMi.png" alt="" loading="lazy" />
+        </picture>
+        <picture>
+          <source
+            srcset="/data/about-me/716643qu7bH3bo.avif"
+            type="image/avif"
+          />
+          <source
+            srcset="/data/about-me/716643qu7bH3bo.webp"
+            type="image/webp"
+          />
+          <img src="/data/about-me/716643qu7bH3bo.png" alt="" loading="lazy" />
+        </picture>
+        <picture>
+          <source
+            srcset="/data/about-me/716643pk0JcOEJ.avif"
+            type="image/avif"
+          />
+          <source
+            srcset="/data/about-me/716643pk0JcOEJ.webp"
+            type="image/webp"
+          />
+          <img src="/data/about-me/716643pk0JcOEJ.png" alt="" loading="lazy" />
+        </picture>
       </bpc-images>
     </div>
   </>
@@ -109,13 +130,22 @@ const RightSideContent = () => (
 export default () => (
   <>
     <div class={"flex-1"}>
-      <img
-        src={
-          "https://d37b3blifa5mva.cloudfront.net/000_clients/716643/page/photo-profile-caf364.jpg"
-        }
-        alt={"profile picture"}
-        class={"w-full"}
-      />
+      <picture>
+        <source
+          srcset="/data/about-me/photo-profile-caf364.avif"
+          type="image/avif"
+        />
+        <source
+          srcset="/data/about-me/photo-profile-caf364.webp"
+          type="image/webp"
+        />
+        <img
+          src="/data/about-me/photo-profile-caf364.jpg"
+          alt="Profile Picture"
+          class="w-full"
+          loading="lazy"
+        />
+      </picture>
     </div>
     <div
       class={
