@@ -94,6 +94,7 @@ function PersonalBlog() {
 					const res = await fetch(getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`));
 					if (!res.ok) {
 						reject(await res.text());
+						return;
 					}
 					resolve(await res.text());
 				});
@@ -103,11 +104,6 @@ function PersonalBlog() {
       for (let i = 0; i < currentPageEntries; ++i) {
         const resolvedEntryJson = resolvedEntries[i];
 				const resolvedEntryHtml = resolvedEntries[i + currentPageEntries];
-        // if (resolvedEntry.status === "rejected") {
-        //   _entries.push({}); // Let it be added on error
-        //   continue;
-        // }
-				console.log(resolvedEntryHtml)
         _entries.push({
 					title: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).title,
 					timestamp: (resolvedEntryJson.status === 'rejected') ? undefined : (resolvedEntryJson.value as EntryJson).timestamp,
