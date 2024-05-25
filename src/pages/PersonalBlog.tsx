@@ -1,5 +1,7 @@
-import { on, onMount } from "solid-js";
+import { Index, Show, createEffect, createSignal, on, onMount } from "solid-js";
+
 import BlogEntry from "../components/BlogEntry";
+import PageLoading from "../components/PageLoading";
 
 //
 import {
@@ -18,8 +20,6 @@ import "../components/userComponents/Images";
 import "../components/userComponents/Paragraph";
 import "../components/userComponents/HorizontalSpacer";
 import "../components/userComponents/VerticalSpacer";
-import { Index, Show, createEffect, createSignal } from "solid-js";
-import PageLoading from "../components/PageLoading";
 
 const PAGE_LENGTH = 10;
 
@@ -95,19 +95,22 @@ function PersonalBlog() {
           entryIds[i] = new TextDecoder("utf-8").decode(
             trimTrailingNuls(entries.slice(firstByte, lastByte)),
           );
-          promisesOfEntries[i] = (
-            await fetch(
+          promisesOfEntries[i] = new Promise(async (resolve, reject) => {
+            const res = await fetch(
               getPathUsingEnvironment(`/data/blog/${entryIds[i]}.json`),
             )
-          ).json();
+						if (!res.ok) {
+							return reject(await res.text());
+						}
+						return resolve(await res.json());
+					});
           promisesOfEntries[i + currentPageEntries] = new Promise(
             async (resolve, reject) => {
               const res = await fetch(
                 getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`),
               );
               if (!res.ok) {
-                reject(await res.text());
-                return;
+                return reject(await res.text());
               }
               resolve(await res.text());
             },
