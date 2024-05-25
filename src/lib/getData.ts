@@ -20,7 +20,7 @@ async function getFileBytes(
     }),
     fetch(path, {
       headers: new Headers({
-        Range: `bytes=${offset}-${offset + bytes}`,
+        Range: `bytes=${offset}-${offset + bytes - 1}`,
       }),
     }),
   ];
