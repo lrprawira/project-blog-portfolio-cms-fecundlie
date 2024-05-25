@@ -1,6 +1,7 @@
 import { customElement, noShadowDOM } from "solid-element";
 import { CustomElement } from "./types";
 import { ParentComponent } from "solid-js";
+import { getPathUsingEnvironment } from "../../lib/getData";
 
 const componentTag = "bpc-images";
 
@@ -17,7 +18,39 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
       {props.children instanceof HTMLCollection
         ? Array.from(props.children).map((x) => {
             let img = x as HTMLElement;
-            if (!(img instanceof HTMLImageElement)) {
+
+            /** Convert /data urls using getPathUsingEnvironment */
+            if (
+              img instanceof HTMLPictureElement ||
+              img instanceof HTMLVideoElement
+            ) {
+              img
+                .querySelectorAll('[srcset^="/data"]')
+                .forEach((x) =>
+                  x.setAttribute(
+                    "srcset",
+                    getPathUsingEnvironment(x.getAttribute("srcset") as string),
+                  ),
+                );
+              img
+                .querySelectorAll('[src^="/data"]')
+                .forEach((x) =>
+                  x.setAttribute(
+                    "src",
+                    getPathUsingEnvironment(x.getAttribute("src") as string),
+                  ),
+                );
+            } else if (
+              img instanceof HTMLImageElement &&
+              img.src.startsWith("/data")
+            ) {
+              img.setAttribute(
+                "src",
+                getPathUsingEnvironment(x.getAttribute("src") as string),
+              );
+            }
+
+            if (img instanceof HTMLPictureElement) {
               img = img.querySelector("img") ?? img;
             }
             img.setAttribute("loading", "lazy");
