@@ -131,18 +131,19 @@ export function getPaginationByteRange(
   offsetNumberOfEntries: number,
   numberOfEntries: number,
   contentLength: number,
-): [number, number] {
+): [number, number, number] {
   const lastByte = contentLength - entrySize * offsetNumberOfEntries;
   if (lastByte < entryPointer) {
-    return [-1, -1];
+    return [-1, -1, -1];
   }
+	const pages = Math.floor((contentLength - entryPointer) / (entrySize * numberOfEntries));
   for (let i = numberOfEntries; i > 0; --i) {
     const firstByte = lastByte - entrySize * i;
     if (firstByte >= entryPointer) {
-      return [firstByte, lastByte];
+      return [firstByte, lastByte, pages];
     }
   }
-  return [-1, -1];
+  return [-1, -1, -1];
 }
 
 export function trimTrailingNuls(arr: Uint8Array) {

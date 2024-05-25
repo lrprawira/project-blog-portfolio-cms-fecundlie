@@ -35,6 +35,7 @@ type EntryHtml = string;
 function PersonalBlog() {
   const [loading, setLoading] = createSignal<boolean>(false);
   const [currentPage] = createSignal<number>(0);
+	const [pages, setPages] = createSignal<number>(0);
   const [entries, setEntries] = createSignal<Array<Entry>>([]);
   createEffect(async () => {
     setLoading(true);
@@ -59,13 +60,17 @@ function PersonalBlog() {
       const entrySize = getEntrySize(fullHeader);
       // const bitmasks = getBitmasks(fullHeader);
       const entryPointer = getEntryPointer(fullHeader);
-      const [firstPageByte, lastPageByte] = getPaginationByteRange(
+      const [firstPageByte, lastPageByte, numOfPages] = getPaginationByteRange(
         entryPointer,
         Number(entrySize),
         currentPage(),
         PAGE_LENGTH,
         contentLength,
       );
+			if (numOfPages === -1) {
+				throw new Error('getPaginationByteRange failed to get any content');
+			}
+			setPages(numOfPages);
       const [entries] = await getData(
         "/data/blog/pointer.bin",
         firstPageByte,
@@ -134,6 +139,9 @@ function PersonalBlog() {
               />
             )}
           </Index>
+					<div class="text-center">
+					Page {currentPage() + 1} / {pages() + 1}
+					</div>
         </Show>
       </div>
     </div>
