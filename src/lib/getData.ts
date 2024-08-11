@@ -43,10 +43,10 @@ async function getFileBytes(
 //   return [new Uint8Array(bin), res.headers];
 // }
 
-export function getPathUsingEnvironment(path: string) {
+export function getPathUsingEnvironment(path: string, prefix: string = '') {
   return process.env.NODE_ENV === "development"
     ? path.replace(/^public\//, '')
-    : `${getRemotePathPrefix()}${path}`;
+    : `${getRemotePathPrefix()}${prefix}${path}`;
 }
 
 function getRemotePathPrefix() {

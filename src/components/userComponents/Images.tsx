@@ -24,12 +24,13 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
               img instanceof HTMLPictureElement ||
               img instanceof HTMLVideoElement
             ) {
+						console.log(img);
               img
                 .querySelectorAll('[srcset^="/data"]')
                 .forEach((x) =>
                   x.setAttribute(
                     "srcset",
-                    `public/${getPathUsingEnvironment(x.getAttribute("srcset") as string)}`,
+                    getPathUsingEnvironment(x.getAttribute("srcset") as string, 'public/'),
                   ),
                 );
               img
@@ -37,7 +38,7 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
                 .forEach((x) =>
                   x.setAttribute(
                     "src",
-                    `public/${getPathUsingEnvironment(x.getAttribute("src") as string)}`,
+                    getPathUsingEnvironment(x.getAttribute("src") as string, 'public/'),
                   ),
                 );
             } else if (
@@ -46,7 +47,7 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
             ) {
               img.setAttribute(
                 "src",
-                `public/${getPathUsingEnvironment(x.getAttribute("src") as string)}`,
+                getPathUsingEnvironment(x.getAttribute("src") as string, 'public/'),
               );
             }
 
