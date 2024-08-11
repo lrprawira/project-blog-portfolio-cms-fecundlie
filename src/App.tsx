@@ -4,11 +4,13 @@ import { ParentProps, lazy } from "solid-js";
 import { MetaProvider, Title } from "@solidjs/meta";
 import constants from "./lib/constants";
 import SiteWideLinks from "./components/SiteWideLinks";
+import AdminPane from "./components/AdminPane";
 
 const LazyRoot = lazy(() => import("./pages/Root"));
 const LazyWelcome = lazy(() => import("./pages/Welcome"));
 const LazyAboutMe = lazy(() => import("./pages/AboutMe"));
 const LazyPersonalBlog = lazy(() => import("./pages/PersonalBlog"));
+const LazyWizard = lazy(() => import("./pages/Wizard"));
 const LazyNotFound = lazy(() => import("./pages/NotFound"));
 const LazyNotFoundRedirector = lazy(() => import("./pages/NotFoundRedirector"));
 
@@ -38,9 +40,11 @@ function App() {
           <Route path={"/welcome"} component={LazyWelcome} />
           <Route path={"/about-me"} component={LazyAboutMe} />
           <Route path={"/personal-blog"} component={LazyPersonalBlog} />
+          <Route path={"/wizard"} component={LazyWizard} />
           <Route path={"/404"} component={LazyNotFound} />
           <Route path={"*404"} component={LazyNotFoundRedirector} />
         </Router>
+        <AdminPane />
       </div>
     </MetaProvider>
   );

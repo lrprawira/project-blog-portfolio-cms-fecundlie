@@ -45,12 +45,12 @@ async function getFileBytes(
 
 export function getPathUsingEnvironment(path: string) {
   return process.env.NODE_ENV === "development"
-    ? path
+    ? path.replace(/^public\//, '')
     : `${getRemotePathPrefix()}${path}`;
 }
 
 function getRemotePathPrefix() {
-  return "https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master/public";
+  return "https://raw.githubusercontent.com/lrprawira/project-blog-portfolio-cms-fecundlie/master/";
 }
 
 export function typedArrayToHexStringArray(arr: Uint8Array): Array<string> {

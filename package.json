@@ -9,12 +9,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@isomorphic-git/lightning-fs": "^4.6.0",
     "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.13.3",
+    "ckeditor5": "^42.0.1",
     "isomorphic-git": "^1.25.10",
+    "nanoid": "^5.0.7",
     "solid-element": "^1.8.0",
     "solid-icons": "^1.1.0",
-    "solid-js": "^1.8.15"
+    "solid-js": "^1.8.15",
+    "solid-zustand": "^1.8.1",
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "web": "link:@isomorphic-git/http/web",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@netlify/functions": "^2.6.3",

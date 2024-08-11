@@ -4,13 +4,17 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+	/* --ck-color-base-background: transparent !important; */
+	/* --ck-color-base-border: transparent !important; */
+	/* --ck-color-input-background: rgb(36, 34, 47); */
 }
 
 a {
@@ -35,6 +39,11 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+* {
+	box-sizing: border-box;
 }
 
 h1 {

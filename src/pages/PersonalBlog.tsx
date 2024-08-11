@@ -3,6 +3,8 @@ import { Index, Show, createEffect, createSignal, on, onMount } from "solid-js";
 import BlogEntry from "../components/BlogEntry";
 import PageLoading from "../components/PageLoading";
 
+import { PERSONAL_BLOG_PATH, POINTER_BIN_FILE } from "../lib/constants";
+
 //
 import {
   getData,
@@ -15,13 +17,16 @@ import {
   validateFormatHeader,
 } from "../lib/getData";
 
+import { useAdminStore } from "../lib/states";
+
 // User components
 import "../components/userComponents/Images";
 import "../components/userComponents/Paragraph";
 import "../components/userComponents/HorizontalSpacer";
 import "../components/userComponents/VerticalSpacer";
+import { useNavigate } from "@solidjs/router";
 
-const PAGE_LENGTH = 10;
+const PAGE_LENGTH = 3;
 
 interface Entry {
   title?: string;
@@ -34,19 +39,70 @@ type EntryJson = Omit<Entry, "slug" | "content">;
 type EntryHtml = string;
 
 function PersonalBlog() {
+  const asAdmin = useAdminStore((state) => state.asAdmin);
+  const navigate = useNavigate();
   const [loading, setLoading] = createSignal<boolean>(false);
   const [currentPage, setCurrentPage] = createSignal<number>(0);
   const [pages, setPages] = createSignal<number>(0);
   const [entries, setEntries] = createSignal<Array<Entry>>([]);
 
-  onMount(() => {});
+  // async function buildLocalGitRepo() {
+  //   const dir = "/repo";
+  //   const fs = new LightningFS("fs");
+  //   const promisifiedFS = fs.promises;
+  //   try {
+  //     await git.clone({
+  //       fs,
+  //       http,
+  //       dir,
+  //       url: "https://github.com/lrprawira/project-blog-portfolio-cms-fecundlie",
+  //       corsProxy: "https://cors.isomorphic-git.org",
+  //       singleBranch: true,
+  //       depth: 1,
+  //     });
+  //   } catch (e) {
+  //     if (!(e instanceof Error)) {
+  //       return;
+  //     }
+  //     if (e.name === "NotFoundError") {
+  //       console.warn("FS error:", e.name, "Retrying...");
+  //       fs.rmdir(dir, undefined, () => null);
+  //       return buildLocalGitRepo();
+  //     }
+  //     console.error(e);
+  //     return;
+  //   }
+  //   const fileList = await git.listFiles({ fs, dir });
+  //   console.log(fileList);
+  //   const blogPointers = await promisifiedFS.readFile(
+  //     `${VFS_PREFIX}/${PERSONAL_BLOG_PATH}/${POINTER_BIN_FILE}`,
+  //     undefined,
+  //   );
+  //   if (!(blogPointers instanceof Uint8Array)) {
+  //     console.error("blogPointers is not Uint8Array");
+  //     return;
+  //   }
+  //   console.log(blogPointers);
+  //   // Add new blog pointer
+  //   const newBlogPointers = new Uint8Array(blogPointers.length + 255);
+  //   newBlogPointers.set(blogPointers);
+  //   const newBlogPointerID = new Uint8Array(255)
+  // newBlogPointerID.set(
+  //     new TextEncoder().encode(nanoid(255)),
+  //   );
+  //   newBlogPointers.set(newBlogPointerID, blogPointers.length);
+  // console.log(newBlogPointers);
+  // }
+  onMount(() => {
+    // buildLocalGitRepo();
+  });
   createEffect(
     on(currentPage, async () => {
       setLoading(true);
       try {
         const [fullHeader, resHeaders] = await getData(
-          "/data/blog/pointer.bin",
-          0,
+          `${PERSONAL_BLOG_PATH}/${POINTER_BIN_FILE}`,
+          0x0,
           82,
         );
         // const contentLength = parseInt(
@@ -76,13 +132,11 @@ function PersonalBlog() {
           throw new Error("getPaginationByteRange failed to get any content");
         }
         setPages(numOfPages);
-        console.log(firstPageByte, lastPageByte, lastPageByte - firstPageByte);
         const [entries] = await getData(
-          "/data/blog/pointer.bin",
+          `${PERSONAL_BLOG_PATH}/${POINTER_BIN_FILE}`,
           firstPageByte,
           lastPageByte - firstPageByte,
         );
-        console.log(entries);
         const currentPageEntries = entries.length / Number(entrySize);
         const entryIds = Array<string>(currentPageEntries);
         const promisesOfEntries = Array<Promise<EntryJson | EntryHtml>>(
@@ -97,17 +151,21 @@ function PersonalBlog() {
           );
           promisesOfEntries[i] = new Promise(async (resolve, reject) => {
             const res = await fetch(
-              getPathUsingEnvironment(`/data/blog/${entryIds[i]}.json`),
-            )
-						if (!res.ok) {
-							return reject(await res.text());
-						}
-						return resolve(await res.json());
-					});
+              getPathUsingEnvironment(
+                `${PERSONAL_BLOG_PATH}/${entryIds[i]}.json`,
+              ),
+            );
+            if (!res.ok) {
+              return reject(await res.text());
+            }
+            return resolve(await res.json());
+          });
           promisesOfEntries[i + currentPageEntries] = new Promise(
             async (resolve, reject) => {
               const res = await fetch(
-                getPathUsingEnvironment(`/data/blog/${entryIds[i]}.html`),
+                getPathUsingEnvironment(
+                  `${PERSONAL_BLOG_PATH}/${entryIds[i]}.html`,
+                ),
               );
               if (!res.ok) {
                 return reject(await res.text());
@@ -152,6 +210,17 @@ function PersonalBlog() {
   return (
     <div class="flex flex-1 flex-justify-center mt-8">
       <div class="flex flex-col max-w-275 w-75% gap-16 pb-8">
+        <Show when={asAdmin()}>
+          <div>
+            <button
+              onclick={() =>
+                navigate("/wizard?category=personal-blog&type=new")
+              }
+            >
+              Add new blog
+            </button>
+          </div>
+        </Show>
         <Show when={!loading()} fallback={<PageLoading />}>
           <Index each={entries()}>
             {(blogEntry) => (
@@ -165,6 +234,7 @@ function PersonalBlog() {
           <div class="text-center">
             <button
               disabled={currentPage() < 1}
+              style={{ opacity: currentPage() < 1 ? 0 : 1 }}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
               Prev
@@ -174,6 +244,7 @@ function PersonalBlog() {
             </span>
             <button
               disabled={currentPage() >= pages()}
+              style={{ opacity: currentPage() >= pages() ? 0 : 1 }}
               onClick={() => setCurrentPage((p) => p + 1)}
             >
               Next

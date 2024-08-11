@@ -21,7 +21,7 @@ const sidebarEntryDataFactory = (args: {
   };
 };
 
-const formatMagic = new Uint8Array([
+const FORMAT_MAGIC = new Uint8Array([
   0x00, 0x00, 0x00, 0x00, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x00,
   0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x00, 0x42, 0x69, 0x6e, 0x61, 0x72,
   0x79, 0x00, 0x46, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x00, 0x34, 0x00, 0x50, 0x72,
@@ -30,7 +30,7 @@ const formatMagic = new Uint8Array([
 ]);
 
 const pointers = {
-  formatMagic,
+  formatMagic: FORMAT_MAGIC,
   title: "Lie Fecund",
   favicon:
     "https://d37b3blifa5mva.cloudfront.net/000_clients/716643/file/32x32-716643ROvugApx.ico",
@@ -86,5 +86,15 @@ const pointers = {
   ],
   blogEntries: new Map([["hantu-lokal", null]]),
 };
+
+export const categories = new Map();
+categories.set('personal-blog', 'Personal Blog');
+categories.set('3d-works', '3D Works');
+categories.set('2d-works', '2D Works');
+categories.set('personal-artworks', 'Personal Artworks');
+
+export const POINTER_BIN_FILE = 'pointer.bin';
+export const PERSONAL_BLOG_PATH = 'public/data/personal-blog';
+export const VFS_PREFIX = '/repo';
 
 export default pointers;

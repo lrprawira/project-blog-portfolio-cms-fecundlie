@@ -1,7 +1,9 @@
 import { A, useLocation } from "@solidjs/router";
 import styles from "./SideNavigation.module.css";
 import constants from "../lib/constants";
-import { Component, Index, Match, Switch } from "solid-js";
+import { Component, Index, Match, Show, Switch } from "solid-js";
+
+import { useAdminStore } from '../lib/states';
 
 const activeTextColor = "text-color-lime-400";
 const inactiveTextColor = "text-color-stone";
@@ -38,9 +40,10 @@ const SideNavSeparator: Component = () => {
 };
 
 function SideNavigation() {
+	const asAdmin = useAdminStore((state) => state.asAdmin);
   return (
     <>
-      <div class={"w-16em"}></div>
+      <div class={"w-16em"}> </div>
       <div class={styles.wrapper}>
         <nav class={styles.nav}>
           <A href="/" class="w-inherit pb-4 mt-8">
@@ -56,6 +59,13 @@ function SideNavigation() {
               />
             </picture>
           </A>
+					<div class="px-6 text-sm text-center mb-6 text-green">
+						<Show when={asAdmin()}>
+							Administrator View
+							<br/>
+							Setup the tokens beforehand!
+						</Show>
+					</div>
           <div
             class={"flex flex-col gap-3 flex-grow-1 flex-basis-0 overflow-auto"}
           >
