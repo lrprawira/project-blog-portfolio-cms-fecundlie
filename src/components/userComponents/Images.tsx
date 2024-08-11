@@ -29,7 +29,7 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
                 .forEach((x) =>
                   x.setAttribute(
                     "srcset",
-                    getPathUsingEnvironment(x.getAttribute("srcset") as string),
+                    `public/${getPathUsingEnvironment(x.getAttribute("srcset") as string)}`,
                   ),
                 );
               img
@@ -37,7 +37,7 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
                 .forEach((x) =>
                   x.setAttribute(
                     "src",
-                    getPathUsingEnvironment(x.getAttribute("src") as string),
+                    `public/${getPathUsingEnvironment(x.getAttribute("src") as string)}`,
                   ),
                 );
             } else if (
@@ -46,7 +46,7 @@ const Images: ParentComponent<{ minSize?: number }> = (props) => {
             ) {
               img.setAttribute(
                 "src",
-                getPathUsingEnvironment(x.getAttribute("src") as string),
+                `public/${getPathUsingEnvironment(x.getAttribute("src") as string)}`,
               );
             }
 
