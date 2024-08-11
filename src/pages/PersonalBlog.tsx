@@ -29,9 +29,9 @@ import { useNavigate } from "@solidjs/router";
 const PAGE_LENGTH = 3;
 
 interface Entry {
+  slug: string;
   title?: string;
   content?: string;
-  slug?: string;
   timestamp?: number;
 }
 
@@ -225,6 +225,7 @@ function PersonalBlog() {
           <Index each={entries()}>
             {(blogEntry) => (
               <BlogEntry
+								slug={blogEntry().slug}
                 title={blogEntry().title}
                 content={blogEntry().content}
                 timestamp={blogEntry().timestamp}
